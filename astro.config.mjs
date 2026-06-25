@@ -1,0 +1,14 @@
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
+
+export default defineConfig({
+  vite: {
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['react-router-dom']
+    }
+  },
+  integrations: [react()],
+});

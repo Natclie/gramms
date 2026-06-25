@@ -1,0 +1,28 @@
+---
+import '../styles/global.css';
+import Header from '../../components/Header.jsx';
+import AppRouter from '../../components/AppRouter.jsx';
+import Footer from '../../components/Footer.astro';
+
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>GRAMM</title>
+	</head>
+	<body class="flex justify-between min-h-screen items-center flex-col bg-[#1c222b]">
+		<Header 
+		client:load/>
+		
+		<div class="min-h-screen flex items-center">
+			<AppRouter 
+			client:only="react" />
+		</div>
+		<Footer 
+		
+		client/>
+	</body>
+</html>

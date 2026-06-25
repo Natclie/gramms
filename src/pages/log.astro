@@ -1,0 +1,26 @@
+---
+import Header from "../../components/Header.jsx";
+import Footer from "../../components/Footer.astro";
+import '../styles/global.css'
+import Login from "../../components/Login.jsx";
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body class="flex flex-col bg-[#1c222b] justify-between min-h-screen">
+    <Header 
+    client:load/>
+    <div class="min-h-screen flex items-center">
+    <Login 
+    client:only/>
+    </div>
+    
+    <Footer 
+    client:load/>
+</body>
+</html>
