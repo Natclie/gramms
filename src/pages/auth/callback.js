@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabaseClient.js';
 
-export async function get({ url, redirect }) {
+export async function GET({ url, redirect }) {
   const code = url.searchParams.get('code');
 
   if (!code) {
