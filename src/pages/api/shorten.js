@@ -68,81 +68,120 @@ export async function POST({ request }) {
 
   try {
     body = await request.json();
+    console.log(body);
+console.log(typeof body.userId);
+console.log(body.userId);
   } catch (error) {
     return jsonResponse({ error: 'Payload inválido.' }, 400);
   }
 
   const originalUrl = typeof body.url === 'string' ? body.url.trim() : '';
-  let shortSlug = typeof body.slug === 'string' ? body.slug.trim() : '';
-  const userId = typeof body.userId === 'string' ? body.userId.trim() : null;
+let shortSlug = typeof body.slug === 'string' ? body.slug.trim() : '';
 
-  if (!originalUrl) {
-    return jsonResponse({ error: 'La URL es obligatoria.' }, 400);
-  }
+const rawUserId = body.userId;
 
-  if (!shortSlug || !isValidSlug(shortSlug)) {
-    shortSlug = generateSlug();
-  }
+const userId =
+  typeof rawUserId === 'string'
+    ? (rawUserId.trim() === '' || rawUserId.trim() === 'null'
+        ? null
+        : rawUserId.trim())
+    : null;
 
-  try {
-    const { data: existing, error: existingError } = await supabase
-      .from('urls')
-      .select('short_slug, original_url')
-      .eq('original_url', originalUrl)
-      .eq('user_id', userId)
-      .maybeSingle();
-
-    if (existingError) {
-      console.error('Error consultando URL existente:', existingError);
-      return jsonResponse({ error: 'Error del servidor al buscar URL existente.' }, 500);
-    }
-
-    if (existing) {
-      return jsonResponse({ short_slug: existing.short_slug });
-    }
-
-    const maxAttempts = 3;
-    let attemptSlug = shortSlug;
-    let insertResult = null;
-
-    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-      const payload = {
-        original_url: originalUrl,
-        short_slug: attemptSlug,
-        user_id: userId,
-      };
-
-      const { data, error } = await supabase.from('urls').insert([payload]);
-
-      if (!error) {
-        insertResult = data?.[0];
-        break;
-      }
-
-      const slugTaken =
-        error.details?.includes('already exists') ||
-        error.code === '23505' ||
-        error.message?.includes('duplicate');
-
-      if (slugTaken) {
-        attemptSlug = generateSlug();
-        continue;
-      }
-
-      console.error('Error insertando URL:', error);
-      return jsonResponse({ error: 'Error del servidor al crear la URL.' }, 500);
-    }
-
-    if (!insertResult) {
-      return jsonResponse(
-        { error: 'No se pudo generar un slug único. Intenta de nuevo.' },
-        500
-      );
-    }
-
-    return jsonResponse({ short_slug: insertResult.short_slug });
-  } catch (error) {
-    console.error('Error en el endpoint /api/shorten:', error);
-    return jsonResponse({ error: 'Error interno del servidor.' }, 500);
-  }
+if (!originalUrl) {
+  return jsonResponse({ error: 'La URL es obligatoria.' }, 400);
 }
+
+if (!shortSlug || !isValidSlug(shortSlug)) {
+  shortSlug = generateSlug();
+}
+
+try {
+  let query = supabase
+    .from('urls')
+    .select('short_slug, original_url')
+    .eq('original_url', originalUrl);
+
+  if (userId) {
+    query = query.eq('user_id', userId);
+  } else {
+    query = query.is('user_id', null);
+  }
+
+  const { data: existing, error: existingError } =
+    await query.maybeSingle();
+
+  if (existingError) {
+    console.error('Body recibido:', body);
+    console.error('userId:', userId);
+    console.error(existingError);
+
+    return jsonResponse({
+      code: existingError.code,
+      message: existingError.message,
+      details: existingError.details,
+      hint: existingError.hint,
+    }, 500);
+  }
+
+  if (existing) {
+    return jsonResponse({ short_slug: existing.short_slug });
+  }
+
+  const maxAttempts = 3;
+  let attemptSlug = shortSlug;
+  let insertResult = null;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const payload = {
+      original_url: originalUrl,
+      short_slug: attemptSlug,
+      user_id: userId,
+    };
+
+    const { data, error } = await supabase
+      .from('urls')
+      .insert([payload])
+      .select()
+      .single();
+
+    if (!error) {
+      insertResult = data;
+      break;
+    }
+
+    const slugTaken =
+      error.code === '23505' ||
+      error.details?.includes('already exists') ||
+      error.message?.includes('duplicate');
+
+    if (slugTaken) {
+      attemptSlug = generateSlug();
+      continue;
+    }
+
+    console.error(error);
+    return jsonResponse(
+      { error: 'Error del servidor al crear la URL.' },
+      500
+    );
+  }
+
+  if (!insertResult) {
+    return jsonResponse(
+      { error: 'No se pudo generar un slug único.' },
+      500
+    );
+  }
+
+  return jsonResponse({
+    short_slug: insertResult.short_slug,
+  });
+
+} catch (error) {
+  console.error(error);
+
+  return jsonResponse(
+    { error: 'Error interno del servidor.' },
+    500
+  );
+}}

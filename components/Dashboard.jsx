@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import QRCode from "qrcode";
 import { supabase } from "../src/lib/supabaseClient.js";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +8,12 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
+  const [showQr, setShowQr] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState("");
+  const [qrLink, setQrLink] = useState("");
+  const [qrSlug, setQrSlug] = useState("");
+  const [qrLoading, setQrLoading] = useState(false);
+  const [qrError, setQrError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,17 +52,53 @@ export default function Dashboard() {
     setLinks((prev) => prev.filter((link) => link.id !== id));
     setDeleteId(null);
   };
-useEffect(() => {
-  if (deleteId) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
 
-  return () => {
-    document.body.style.overflow = "auto";
+  const openQrPopup = async (shortSlug) => {
+    const url = `${window.location.origin}/${shortSlug}`;
+    setQrLink(url);
+    setQrSlug(shortSlug);
+    setQrError(null);
+    setShowQr(true);
+    setQrLoading(true);
+    setQrDataUrl("");
+
+    try {
+      const dataUrl = await QRCode.toDataURL(url, {
+        width: 280,
+        margin: 0,
+        color: {
+          dark: "#000000",
+          light: "#ffffff",
+        },
+      });
+      setQrDataUrl(dataUrl);
+    } catch (error) {
+      console.error("QR generation error:", error);
+      setQrError("No se pudo generar el QR. Intenta de nuevo.");
+    } finally {
+      setQrLoading(false);
+    }
   };
-}, [deleteId]);
+
+  const downloadQr = () => {
+    if (!qrDataUrl) return;
+    const link = document.createElement("a");
+    link.href = qrDataUrl;
+    link.download = `qr-${qrSlug}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    const activeModal = deleteId || showQr;
+    document.body.style.overflow = activeModal ? "hidden" : "auto";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [deleteId, showQr]);
+
 function timeAgo(dateString) {
   const date = new Date(dateString);
   const now = new Date();
@@ -110,7 +153,10 @@ function timeAgo(dateString) {
                       year: "numeric",
                     })}
                   </span>
-                  <div className="flex gap-3 relative">
+                  <div className="flex gap-2 relative">
+                    <button className="cursor-pointer" onClick={() => openQrPopup(link.short_slug)}>
+                      <img className="w-4.5" src="/qr.svg" alt="stats icon" />
+                    </button>
                     <a target="_blank" href={link.short_slug}>
                         <img className="w-6.5" src="/arrow.svg" alt="arrow icon" />
                     </a>
@@ -174,6 +220,60 @@ function timeAgo(dateString) {
           )}
         </div>
       </div>
+
+      {showQr && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowQr(false)}
+        >
+          <div
+            className="relative bg-[#1c222b] border-slate-700/30 border text-slate-200 rounded-lg shadow-lg p-6 max-w-md w-full"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              className="absolute cursor-pointer top-3 right-3 text-slate-400 hover:text-white"
+              onClick={() => setShowQr(false)}
+            >
+              <img className="w-5" src="/close.svg" alt="close icon" />
+            </button>
+            <h2 className="text-lg font-semibold mb-3">QR del enlace</h2>
+            <p className="text-sm text-slate-400 mb-4 break-all">{qrLink}</p>
+
+            {qrLoading ? (
+              <div className="text-center py-10">Generando QR...</div>
+            ) : qrError ? (
+              <div className="text-center text-red-400">{qrError}</div>
+            ) : (
+              <div className="flex flex-col items-center gap-4">
+                <img
+                  src={qrDataUrl}
+                  alt={`QR ${qrLink}`}
+                  className="w-60 h-60 bg-white p-1 rounded-md"
+                />
+                <div className="flex gap-3">
+                  <button
+                    className="flex cursor-pointer items-center gap-2 bg-slate-800 hover:bg-slate-700 duration-50 text-white px-4 py-2 rounded-2xl"
+                    onClick={downloadQr}
+                    type="button"
+                  >
+                    <img className="w-6" src="/download.svg" alt="download icon" />
+                    Descargar
+                  </button>
+                  <a
+                    href={qrLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm border border-slate-700/30 px-4 py-2 rounded-2xl hover:bg-slate-900"
+                  >
+                    <img className="w-6" src="/arrow.svg" alt="open icon" />
+                    Abrir enlace
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
