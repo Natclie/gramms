@@ -1,43 +1,40 @@
-# Astro Starter Kit: Minimal
+##  Acortador de URLs
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+* Acorta cualquier enlace largo.
+* Genera un slug aleatorio automáticamente.
+* Evita duplicar enlaces para un mismo usuario.
+* Genera automaticamente un QR por enlace
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+##  Autenticación
 
-## 🚀 Project Structure
+* Inicio de sesión con Google mediante Supabase Auth.
+* Persistencia de la sesión.
 
-Inside of your Astro project, you'll see the following folders and files:
+##  Dashboard
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+* Lista todos los enlaces del usuario.
+* Muestra la URL original.
+* Muestra la URL corta.
+* Permite eliminar enlaces.
+* Crea un QR para cada enlace.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+##  Seguridad
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+* Rate limiting por IP.
+* Captcha matemático sencillo para evitar bots.
+* Validación de URLs.
+* Validación del slug.
+* Reintentos automáticos si un slug ya existe.
+* Row Level Security (RLS) mediante Supabase.
 
-Any static assets, like images, can be placed in the `public/` directory.
+##  Feedback
 
-## 🧞 Commands
+* Formulario para enviar sugerencias o reportar errores.
+* No requiere iniciar sesión.
 
-All commands are run from the root of the project, from a terminal:
+##  Tecnologias
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+* Vercel.
+* Supabase.
+* Astro.
+* React.
