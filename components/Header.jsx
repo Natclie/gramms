@@ -5,6 +5,9 @@ export default function Header() {
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef();
+  const handleDashboardClick = () => {
+  window.location.href = user ? "/dash" : "/log";
+  };
 
   useEffect(() => {
     // Cargar usuario actual
@@ -39,19 +42,28 @@ export default function Header() {
   };
 
   return (
-    <header className="w-full z-10 shadow-md fixed bg-[#1c222b] text-slate-200">
-      <div className="flex justify-between px-5 py-3">
-        <a className="text-2xl font-bold" href="/">GRAMM</a>
-
-        <ul className="flex gap-2 items-center">
-          <li className="flex gap-3 border-slate-200 border px-2 py-0.5 rounded-2xl">
-            {/*
-            <a target="_blank" href="https://github.com/natclie">
-              <img className="w-5" src="github-thin.svg" alt="GitHub" />
-            </a>
-            
-            */}
-            <a href="/feedback">
+    <header className="fixed top-0 z-20 w-full border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-sm text-slate-100">
+      <div className="flex items-center justify-between py-2 px-4 w-full">
+        <a className="flex items-center gap-2 text-xl font-semibold tracking-tight" href="/">
+          <span>GRAMM</span>
+        </a>
+        <ul className="flex items-center gap-2">
+          <li>
+            <button
+              type="button"
+              onClick={handleDashboardClick}
+              className="flex items-center gap-2 cursor-pointer rounded-full border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 transition hover:border-cyan-400/30 hover:bg-slate-800"
+            >
+              <img className="w-6" src="dashboard.svg" alt="Dashboard icon" />
+              Dashboard
+            </button>
+          </li>
+          <li>
+            <a
+              href="/feedback"
+              className="hover:text-white flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 transition hover:border-cyan-400/30 hover:bg-slate-800"
+            >
+              <img className="w-6" src="chat.svg" alt="Feedback icon" />
               Feedback
             </a>
           </li>
@@ -60,15 +72,15 @@ export default function Header() {
             <li className="relative" ref={menuRef}>
               <img
                 src={user.user_metadata?.avatar_url || user.raw_user_metadata?.picture || "/default-avatar.png"}
-                alt="Perfil"
-                className="w-8 h-8 rounded-full cursor-pointer object-cover"
+                alt="Perfil icon"
+                className="h-9 w-9 cursor-pointer rounded-full object-cover ring-1 ring-slate-700"
                 onClick={() => setMenuOpen((open) => !open)}
               />
               {menuOpen && (
-                <ul className="absolute right-0 pt-0 mt-3 border duration-50 cursor-pointer hover:bg-slate-700 bg-slate-800 text-slate-200 border-slate-700 shadow-lg rounded-2xl z-10">
+                <ul className="absolute right-0 z-10 mt-3 min-w-[9rem] rounded-2xl border border-slate-700 bg-slate-900 p-1 shadow-lg">
                   <li>
                     <button
-                      className="px-1 py-2 w-29 text-center cursor-pointer text-sm flex gap-2"
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-200 transition hover:bg-slate-800"
                       onClick={handleLogout}
                     >
                       <img className="w-4" src="/logout.svg" alt="logout icon" />
@@ -80,8 +92,8 @@ export default function Header() {
             </li>
           ) : (
             <li>
-              <a href="/log">
-                <img className="w-6" src="/user.svg" alt="user svg icon" />
+              <a href="/log" className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-800 bg-slate-900/80 transition hover:border-cyan-400/30 hover:bg-slate-800">
+                <img className="w-5" src="/user.svg" alt="user svg icon" />
               </a>
             </li>
           )}

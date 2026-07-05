@@ -72,49 +72,59 @@ export default function Feedback() {
     };
 
     return (
-        <div className="w-full h-screen flex justify-center items-center">
-            <div className="w-full max-w-md bg-[#1c222b] border border-slate-700 rounded-xl py-2">
-                <div className="flex flex-col mb-2 gap-4 pb-3 items-center border-b border-slate-700">
-                    <h1 className="text-xl font-bold text-slate-200">Feedback</h1>
+        <div className="flex min-h-screen w-full items-center justify-center px-4 py-16">
+            <div className="w-full max-w-xl rounded-[28px] border border-slate-800/80 bg-slate-900/70 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.22)] sm:p-7">
+                <div className="mb-6 border-b border-slate-800/80 pb-4 text-center">
+                    <h1 className="text-2xl font-semibold tracking-tight text-slate-100">Feedback</h1>
+                    <p className="mt-2 text-sm text-slate-400">Comparte tus ideas, bugs o sugerencias para mejorar la experiencia.</p>
                 </div>
-                <div className="px-4">
-                    <form onSubmit={handleSubmit}>
-                        <label className="block text-slate-400 text-sm mb-1">Usuario (opcional)</label>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="mb-1 block text-sm text-slate-400">Usuario (opcional)</label>
                         <input
                             type="text"
-                            placeholder="Username"
+                            placeholder="Tu nombre o alias"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             disabled={isLoggedIn}
-                            className="w-full rounded-xl bg-slate-900 border border-slate-700 text-slate-200 py-2 px-3 mb-4 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="w-full rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-2.5 text-slate-200 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 disabled:cursor-not-allowed disabled:opacity-60"
                         />
-                        <label className="block text-slate-400 text-sm mb-1">Asunto</label>
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm text-slate-400">Asunto</label>
                         <input
                             type="text"
-                            placeholder="Subject"
+                            placeholder="Ej. Sugerencia de mejora"
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
-                            className="w-full rounded-xl bg-slate-900 border border-slate-700 text-slate-200 py-2 px-3 mb-4"
+                            className="w-full rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-2.5 text-slate-200 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
                         />
-                        <label className="block text-slate-400 text-sm mb-1">Feedback</label>
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm text-slate-400">Feedback</label>
                         <textarea
-                            placeholder="Tu feedback"
+                            placeholder="Cuéntanos qué te gustaría ver o mejorar"
                             value={feed}
                             onChange={(e) => setFeed(e.target.value)}
-                            className="w-full rounded-xl bg-slate-900 border border-slate-700 text-slate-200 py-2 px-3 mb-4"
+                            className="min-h-[10rem] w-full rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-2.5 text-slate-200 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
                             rows="8"
                         />
-                        {errorMessage && <p className="text-xs w-full text-center text-red-400 mb-3">{errorMessage}</p>}
-                        {statusMessage && <p className="text-xs text-green-400 mb-3">{statusMessage}</p>}
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="w-full rounded-xl bg-slate-800 border border-slate-700 text-slate-200 py-1 px-3 hover:bg-slate-700 duration-50 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            {isSubmitting ? 'Enviando...' : 'Enviar'}
-                        </button>
-                    </form>
-                </div>
+                    </div>
+
+                    {errorMessage && <p className="w-full text-center text-sm text-red-400">{errorMessage}</p>}
+                    {statusMessage && <p className="w-full text-center text-sm text-emerald-400">{statusMessage}</p>}
+
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full cursor-pointer rounded-2xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2.5 text-sm font-medium text-cyan-200 transition hover:bg-cyan-400/20 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        {isSubmitting ? 'Enviando...' : 'Enviar feedback'}
+                    </button>
+                </form>
             </div>
         </div>
     );
