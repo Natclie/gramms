@@ -92,7 +92,7 @@ export default function Header() {
             </li>
           ) : (
             <li>
-              <a href="/log" className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-800 bg-slate-900/80 transition hover:border-cyan-400/30 hover:bg-slate-800">
+              <a href="/log" className="flex h-10.5 w-10.5 items-center justify-center rounded-full border border-slate-800  bg-slate-900/80 transition hover:border-cyan-400/30 hover:bg-slate-800">
                 <img className="w-5" src="/user.svg" alt="user svg icon" />
               </a>
             </li>

@@ -16,8 +16,8 @@ const signInWithGithub = async () => {
 };
 
   return (
-    <div className="flex w-full justify-center bg-[#1c222b]">
-      <div className="shadow-2xl items-center max-w-xl p-6 rounded-2xl border-slate-700/30 border text-slate-200">
+    <div className="flex w-full justify-center bg-slate-950">
+      <div className="shadow-2xl bg-slate-900/70 items-center max-w-xl p-6 rounded-2xl border-slate-700/30 border text-slate-200">
         <div className="text-center [&_span]:text-slate-300">
           <h1 className="font-bold text-3xl">GRAMM</h1>
           <p className="my-2 text-md [&_SPAN]:font-semibold text-slate-400">
@@ -29,7 +29,7 @@ const signInWithGithub = async () => {
         <div className="flex flex-col items-center gap-3 mt-4">
           <button
             onClick={signInWithGithub}
-            className="flex items-center gap-2 border text-white bg-slate-800 border-slate-700 hover:bg-slate-700 duration-50 rounded-2xl py-2 px-4 w-52 justify-center cursor-pointer"
+            className="flex items-center gap-2 border text-white bg-slate-900/80 border-slate-700 hover:border-cyan-400/30 hover:bg-slate-800 duration-50 rounded-2xl py-2 px-4 w-52 justify-center cursor-pointer"
           >
             <img src="/github-color.svg" alt="icon github" className="w-6" />
             Seguir con GitHub
@@ -37,7 +37,7 @@ const signInWithGithub = async () => {
 
           <button
             onClick={signInWithGoogle}
-            className="flex items-center gap-2 border text-white bg-slate-800 border-slate-700 hover:bg-slate-700 duration-50 rounded-2xl py-2 px-4 w-52 justify-center cursor-pointer"
+            className="flex items-center gap-2 hover:bg-slate-800 border text-white bg-slate-900/80 border-slate-700 hover:border-cyan-400/30 duration-300 rounded-2xl py-2 px-4 w-52 justify-center cursor-pointer"
           >
             <img src="/google-color.svg" alt="icon google" className="w-6" />
             Seguir con Google
